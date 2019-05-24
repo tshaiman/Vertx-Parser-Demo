@@ -23,11 +23,11 @@ public class FileReaderProcessor extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 		logger.info("starting source Processor");
-		vertx.eventBus().consumer(INPUT_CHANNEL,this::onInputCommand);
+		vertx.eventBus().consumer(INPUT_CHANNEL,this::onProcess);
 		super.start();
 	}
 
-	private void onInputCommand(Message<String> tMessage) {
+	private void onProcess(Message<String> tMessage) {
 		String path = tMessage.body();
 		logger.info("Starting file stream processor on source {}",path);
 		startFileSource(path);

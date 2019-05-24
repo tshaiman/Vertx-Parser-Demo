@@ -9,5 +9,6 @@ public class Const {
 	public static final String INVALID_STR = " ILLEGAL";
 
 	public static final String INPUT_CHANNEL = "file.input";
+	public static final String OUTPUT_CHANNEL = "file.output";
 	public static final String BULK_CHANNEL = "bulk";
 }

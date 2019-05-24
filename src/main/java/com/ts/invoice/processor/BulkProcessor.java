@@ -24,11 +24,11 @@ public class BulkProcessor extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 		logger.info("starting source Processor");
-		vertx.eventBus().consumer(BULK_CHANNEL,this::onInputCommand);
+		vertx.eventBus().consumer(BULK_CHANNEL,this::onProcess);
 		super.start();
 	}
 
-	private void onInputCommand(Message<String> tMessage) {
+	private void onProcess(Message<String> tMessage) {
 		String line = tMessage.body();
 		updateOrFlush(line);
 	}
@@ -41,7 +41,7 @@ public class BulkProcessor extends AbstractVerticle {
 			//send the lines to Convert Processor
 			String result = converter.Convert(lines);
 			//send the result down the pipeline
-			System.out.println(result);
+			vertx.eventBus().send(OUTPUT_CHANNEL,result);
 			bulk.clear();
 		}
 	}
