@@ -1,12 +1,13 @@
 package com.ts.invoice.logic;
 
 import com.ts.invoice.interfaces.IParser;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.ts.invoice.utils.ArrayUtils.toPrimitive;
+
 import static com.ts.invoice.utils.Const.LINE_LENGTH;
 import static com.ts.invoice.utils.Const.NA;
 
@@ -73,7 +74,8 @@ public class Parser implements IParser {
 
 	@Override
 	public byte[][] Transform(String[] lines) {
-		byte[] all = toPrimitive(
+
+		byte[] all = ArrayUtils.toPrimitive(
 				Arrays.stream(lines)
 						.filter(s->!s.isEmpty())
 						.flatMap(l->l.chars().boxed())

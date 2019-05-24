@@ -12,18 +12,12 @@ import static com.ts.invoice.utils.Const.INPUT_CHANNEL;
 public class NumericParserApp {
 	static Logger logger = LoggerFactory.getLogger(NumericParserApp.class);
 
-	static String line1 = " _  _  _        _     _  _ ";
-	static String line2 = "|_ | || |  ||_| _|  ||_ |_ ";
-	static String line3 = "|_||_||_|  |  | _|  | _| _|";
 
 
 	public static void main(String[] args) {
-		System.out.println("hello");
-		String[] data = new String[] {line1,line2,line3,""};
-
-
-		//System.out.println(c.Convert(data));
-
+		logger.info("Invoice Parser V 1.0");
+		logger.info("=====================");
+		logger.info("Author : Tomer Shaiman");
 		deployProcessors();
 
 	}

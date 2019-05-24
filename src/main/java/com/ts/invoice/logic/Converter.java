@@ -23,7 +23,7 @@ public class Converter implements IConverter {
 	public String Convert(String[] lines) {
 		//phase 1 : validate
 		if (!Validate(lines)) {
-			return "NA";
+			return INVALID_STR;
 		}
 		ConvertResult convertResult = new ConvertResult();
 		//phase 2 : convert to multi-dim array of bytes , representing a hashed value
@@ -66,6 +66,8 @@ public class Converter implements IConverter {
 
 		return true;
 	}
+
+
 
 
 }
