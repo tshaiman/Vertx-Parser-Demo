@@ -2,7 +2,7 @@ logging:
   level:
     root: INFO
 source:
-  path : "input_1Qa.txt"
+  path : "input_Q1a.txt"
 
 processors:
   filReader : 1
