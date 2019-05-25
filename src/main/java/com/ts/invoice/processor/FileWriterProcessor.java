@@ -16,22 +16,23 @@ import static com.ts.invoice.utils.Const.OUTPUT_CHANNEL;
 
 public class FileWriterProcessor extends AbstractVerticle {
 	Logger logger = LoggerFactory.getLogger(FileReaderProcessor.class);
-	private String output;
+
+	private String outputPath;
 	private AsyncFile file;
 
 	public FileWriterProcessor(String outputName) {
-		output = outputName;
+		outputPath = outputName;
 	}
 
 	@Override
 	public void start() throws Exception {
-		logger.info("starting file writer Processor on output file: {}",output);
+		logger.info("starting file writer Processor on outputPath file: {}", outputPath);
 		vertx.eventBus().consumer(OUTPUT_CHANNEL, this::onProcess);
-		Files.deleteIfExists(Paths.get(output));
+		Files.deleteIfExists(Paths.get(outputPath));
 
 		OpenOptions options = new OpenOptions().setWrite(true).setCreateNew(true);
 		//create the file
-		vertx.fileSystem().open(output, options, ar -> {
+		vertx.fileSystem().open(outputPath, options, ar -> {
 			if (ar.succeeded()) {
 				file = ar.result();
 			} else {
@@ -49,6 +50,7 @@ public class FileWriterProcessor extends AbstractVerticle {
 		if(line.isEmpty()) return;
 
 		if(line.equals(EOF)){ //we got the EOF message
+			logger.info("File Writter completed. closing file");
 			file.flush();
 			file.close();
 			return;

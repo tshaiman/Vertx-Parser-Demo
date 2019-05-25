@@ -1,24 +1,22 @@
+package com.ts.invoice;
+
 import com.ts.invoice.logic.Converter;
+import com.ts.invoice.logic.Parser;
 import com.ts.invoice.processor.BulkProcessor;
 import com.ts.invoice.processor.FileReaderProcessor;
-import com.ts.invoice.logic.Parser;
 import com.ts.invoice.processor.FileWriterProcessor;
 import com.ts.invoice.utils.ArtLoader;
 import io.vertx.reactivex.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 
 import static com.ts.invoice.utils.Const.INPUT_CHANNEL;
 
 
-public class NumericParserApp {
-	static Logger logger = LoggerFactory.getLogger(NumericParserApp.class);
+public class App {
+	static Logger logger = LoggerFactory.getLogger(App.class);
 
 
 
@@ -33,7 +31,7 @@ public class NumericParserApp {
 		if(args.length > 1)
 			sourceOutput = args[1];
 		else
-			sourceOutput = sourceInput.replace("input","output");
+			sourceOutput = "./outputg_Q1a.txt";
 
 		deployProcessors(sourceInput,sourceOutput);
 	}

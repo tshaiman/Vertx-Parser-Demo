@@ -3,6 +3,8 @@ package com.ts.invoice.logic;
 import com.ts.invoice.interfaces.IConverter;
 import com.ts.invoice.interfaces.IParser;
 import com.ts.invoice.model.ConvertResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -12,17 +14,20 @@ import java.util.concurrent.TimeUnit;
 import static com.ts.invoice.utils.Const.*;
 
 public class Converter implements IConverter {
+	private Logger logger = LoggerFactory.getLogger("Converter");
 
 	private IParser parser;
 	ExecutorService executor = Executors.newFixedThreadPool(16);
 
 	public Converter(IParser parser) {
 		this.parser = parser;
+		logger.info("Converter created successfully");
 	}
 
 	public String Convert(String[] lines) {
 		//phase 1 : validate
 		if (!Validate(lines)) {
+			logger.warn("An Invalid Line bulk received.");
 			return INVALID_STR;
 		}
 		ConvertResult convertResult = new ConvertResult();
@@ -45,7 +50,7 @@ public class Converter implements IConverter {
 			if (!countDownLatch.await(2, TimeUnit.SECONDS))
 				return "Incomplete Task";
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error("Converter failure ." + e);
 		}
 
 		return convertResult.toString();

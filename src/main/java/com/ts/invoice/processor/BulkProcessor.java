@@ -2,7 +2,6 @@ package com.ts.invoice.processor;
 
 import com.ts.invoice.interfaces.IConverter;
 import io.vertx.reactivex.core.AbstractVerticle;
-import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.eventbus.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import static com.ts.invoice.utils.Const.*;
 
 public class BulkProcessor extends AbstractVerticle {
 	Logger logger = LoggerFactory.getLogger(BulkProcessor.class);
+
 	private IConverter converter ;
 	public BulkProcessor(IConverter converter) {
 		this.converter = converter;
@@ -37,6 +37,7 @@ public class BulkProcessor extends AbstractVerticle {
 		//check for EOF
 		if(line.equals(EOF)){
 			vertx.eventBus().send(OUTPUT_CHANNEL,line);
+			logger.info("EOF Reached. sending EOF");
 			return;
 		}
 

@@ -3,7 +3,6 @@ package com.ts.invoice.processor;
 
 import io.vertx.core.file.OpenOptions;
 import io.vertx.reactivex.core.AbstractVerticle;
-import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.eventbus.Message;
 import io.vertx.reactivex.core.file.AsyncFile;
 import io.vertx.reactivex.core.file.FileSystem;
@@ -12,8 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static com.ts.invoice.utils.Const.*;
 
@@ -35,6 +35,11 @@ public class FileReaderProcessor extends AbstractVerticle {
 
 	private void startFileSource(String path) {
 		FileSystem fs = vertx.fileSystem();
+		if (!Files.exists(Paths.get(path))) {
+			logger.error("The file input " + path + " does not exists. Exiting");
+			System.exit(1);
+			return;
+		}
 		fs.open(path, new OpenOptions().setCreate(false), result -> {
 			if (result.succeeded()) {
 				AsyncFile asyncFile = result.result();
@@ -43,6 +48,7 @@ public class FileReaderProcessor extends AbstractVerticle {
 					vertx.eventBus().send(BULK_CHANNEL,line);
 				}))
 				.endHandler(v -> {
+					logger.info("File Reader completed. sending EOF");
 					vertx.eventBus().send(BULK_CHANNEL,EOF);
 					asyncFile.close();
 				});
