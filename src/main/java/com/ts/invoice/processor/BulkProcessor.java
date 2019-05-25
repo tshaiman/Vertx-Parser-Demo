@@ -34,6 +34,12 @@ public class BulkProcessor extends AbstractVerticle {
 	}
 
 	private void updateOrFlush(String line) {
+		//check for EOF
+		if(line.equals(EOF)){
+			vertx.eventBus().send(OUTPUT_CHANNEL,line);
+			return;
+		}
+
 		bulk.add(line);
 		//flush
 		if(bulk.size() == LINES){

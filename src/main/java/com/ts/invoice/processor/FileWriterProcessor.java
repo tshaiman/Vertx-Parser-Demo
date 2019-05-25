@@ -8,7 +8,10 @@ import io.vertx.reactivex.core.file.AsyncFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.ts.invoice.utils.Const.INPUT_CHANNEL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static com.ts.invoice.utils.Const.EOF;
 import static com.ts.invoice.utils.Const.OUTPUT_CHANNEL;
 
 public class FileWriterProcessor extends AbstractVerticle {
@@ -24,25 +27,36 @@ public class FileWriterProcessor extends AbstractVerticle {
 	public void start() throws Exception {
 		logger.info("starting file writer Processor on output file: {}",output);
 		vertx.eventBus().consumer(OUTPUT_CHANNEL, this::onProcess);
+		Files.deleteIfExists(Paths.get(output));
 
+		OpenOptions options = new OpenOptions().setWrite(true).setCreateNew(true);
 		//create the file
-		vertx.fileSystem().open(output, new OpenOptions().setAppend(true), ar -> {
+		vertx.fileSystem().open(output, options, ar -> {
 			if (ar.succeeded()) {
 				file = ar.result();
 			} else {
-				System.err.println("Could not open file");
+				logger.error("Could not open file " ,ar.cause());
 			}
 		});
 
 		super.start();
 	}
 
+
+
 	private void onProcess(Message<String> tMessage) {
 		String line = tMessage.body();
 		if(line.isEmpty()) return;
+
+		if(line.equals(EOF)){ //we got the EOF message
+			file.flush();
+			file.close();
+			return;
+		}
+
 		line = line + "\n";
 		Buffer chunk = Buffer.buffer(line);
 		file.write(chunk);
-		file.flush(); // we dont need to do that for every line
+
 	}
 }

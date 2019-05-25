@@ -42,7 +42,10 @@ public class FileReaderProcessor extends AbstractVerticle {
 					String line = normalize(buf.toString("UTF-8"));
 					vertx.eventBus().send(BULK_CHANNEL,line);
 				}))
-				.endHandler(v -> asyncFile.close());
+				.endHandler(v -> {
+					vertx.eventBus().send(BULK_CHANNEL,EOF);
+					asyncFile.close();
+				});
 			}
 		});
 	}
